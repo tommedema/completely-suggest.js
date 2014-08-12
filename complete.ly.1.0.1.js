@@ -208,6 +208,22 @@ function completely(container, config) {
         registerOnTextChangeOldValue = txtInput.value; // <-- ensure that mouse down will not show the dropDown now.
         setTimeout(function() { txtInput.focus(); },0);  // <-- I need to do this for IE 
     }
+
+    //show drop down on focus and hide on blur
+    if (txtInput.addEventListener) {
+        txtInput.addEventListener('focus',  txtInputFocusHandler, false);
+        txtInput.addEventListener('blur',  txtInputBlurHandler, false);
+    }
+    else {
+        txtInput.attachEvent('onfocusin', txtInputFocusHandler); // IE<9
+        txtInput.attachEvent('onfocusout', txtInputBlurHandler); // IE<9
+    }
+    function txtInputFocusHandler() {
+        dropDownController.show();
+    }
+    function txtInputBlurHandler() {
+        dropDownController.hide();
+    }
     
     wrapper.appendChild(dropDown);
     if (container.childNodes.length) {
