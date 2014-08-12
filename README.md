@@ -13,6 +13,8 @@ Changelog compared to forked repo:
   > show autocomplete box on focus, hide on blur
 - Comply with input placeholders
 - Case insensitive matching
+
+ToDo:
 - Inherit font style, size, color from parent element
 - Inherit suggestions width from input element
 - Play nicely with formatted inputs (e.g. Bootstrap themes)
