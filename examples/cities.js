@@ -3,7 +3,7 @@
   contentLoaded(window, function() {
 
     //list of cities
-    var cities = ['Amstelveen', 'Amsterdam', 'Assen', 'Drachten', 'Frankeker', 'Groningen', 'Hoogezand-Sappemer', 'Stadskanaal', 'Venlo', 'Weert', 'Zwolle'];
+    var cities = ['Amstelveen', 'Amsterdam', 'Assen', 'Drachten', 'Frankeker', 'Groningen', 'Hoogezand-Sappemeer', 'Stadskanaal', 'Venlo', 'Weert', 'Zwolle'];
 
     //retrieve the input
     var cityInput = document.getElementById('city-input');

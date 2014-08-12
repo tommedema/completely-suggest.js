@@ -42,6 +42,7 @@ function completely(container, config) {
     txtInput.placeholder_orig = txtInput.placeholder;
     
     var txtHint = txtInput.cloneNode(); 
+    txtHint.placeholder = '';
     txtHint.disabled='';        
     txtHint.style.position = 'absolute';
     txtHint.style.top =  '0';
