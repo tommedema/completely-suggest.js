@@ -11,5 +11,9 @@ Changelog compared to forked repo:
 - Project is focused on providing suggestions, even when no input has been entered yet.
   > hide autocomplete box by default if input is not focused
   > show autocomplete box on focus, hide on blur
+- Comply with input placeholders
 - Case insensitive matching
+- Inherit font style, size, color from parent element
+- Inherit suggestions width from input element
+- Play nicely with formatted inputs (e.g. Bootstrap themes)
 - Cross browser (with HTML5 and ES5 polyfills IE8+)
