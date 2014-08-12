@@ -1,11 +1,13 @@
 /**
- * complete.ly 1.0.0
+ * completely-suggest.js
+ *
  * MIT Licensing
- * Copyright (c) 2013 Lorenzo Puccetti
+ * Copyright (c) 2014 Tom Medema, based on work by Lorenzo Puccetti.
  * 
  * This Software shall be used for doing good things, not bad things.
  * 
-**/  
+**/
+
 function completely(container, config) {
     config = config || {};
     config.fontSize =                       config.fontSize   || '16px';
