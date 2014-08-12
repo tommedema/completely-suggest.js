@@ -19,6 +19,7 @@ function completely(container, config) {
     config.dropDownBorderColor =            config.dropDownBorderColor || '#aaa';
     config.dropDownZIndex =                 config.dropDownZIndex || '100'; // to ensure we are in front of everybody
     config.dropDownOnHoverBackgroundColor = config.dropDownOnHoverBackgroundColor || '#ddd';
+    config.ignoreCase = (typeof config.ignoreCase === 'boolean') ? config.ignoreCase : true;
 
     var txtInput;
     if (container.tagName === 'INPUT') {
@@ -42,7 +43,8 @@ function completely(container, config) {
     txtInput.placeholder_orig = txtInput.placeholder;
     
     var txtHint = txtInput.cloneNode(); 
-    txtHint.placeholder = '';
+    if (txtHint.id) delete txtHint.id;
+    if (txtHint.placeholder) delete txtHint.placeholder;
     txtHint.disabled='';        
     txtHint.style.position = 'absolute';
     txtHint.style.top =  '0';
@@ -145,14 +147,18 @@ function completely(container, config) {
                 
                 rows = [];
                 for (var i=0;i<array.length;i++) {
-                    if (array[i].indexOf(token)!==0) { continue; }
+                    var _token = config.ignoreCase ? token.toLowerCase() : token,
+                        _entry = config.ignoreCase ? array[i].toLowerCase() : array[i],
+                        _normalizedToken = array[i].substring(0, token.length);
+                    if (_entry.indexOf(_token)!==0) { continue; }
                     var divRow =document.createElement('div');
                     divRow.style.color = config.color;
                     divRow.onmouseover = onMouseOver; 
                     divRow.onmouseout =  onMouseOut;
-                    divRow.onmousedown = onMouseDown; 
+                    divRow.onmousedown =  onMouseDown;
+                    
                     divRow.__hint =    array[i];
-                    divRow.innerHTML = token+'<b>'+array[i].substring(token.length)+'</b>';
+                    divRow.innerHTML = _normalizedToken+'<b>'+array[i].substring(token.length)+'</b>';
                     rows.push(divRow);
                     elem.appendChild(divRow);
                 }
@@ -215,10 +221,14 @@ function completely(container, config) {
 
     //show drop down on focus and hide on blur
     if (txtInput.addEventListener) {
+        txtHint.addEventListener('focus',  txtInputFocusHandler, false);
+        txtHint.addEventListener('blur',  txtInputBlurHandler, false);
         txtInput.addEventListener('focus',  txtInputFocusHandler, false);
         txtInput.addEventListener('blur',  txtInputBlurHandler, false);
     }
     else {
+        txtHint.attachEvent('onfocusin', txtInputFocusHandler); // IE<9
+        txtHint.attachEvent('onfocusout', txtInputBlurHandler); // IE<9
         txtInput.attachEvent('onfocusin', txtInputFocusHandler); // IE<9
         txtInput.attachEvent('onfocusout', txtInputBlurHandler); // IE<9
     }
@@ -305,7 +315,10 @@ function completely(container, config) {
             txtHint.value ='';
             for (var i=0;i<optionsLength;i++) {
                 var opt = options[i];
-                if (opt.indexOf(token)===0) {         // <-- how about upperCase vs. lowercase
+                if (opt.indexOf(token)=== 0 || config.ignoreCase && opt.toLowerCase().indexOf(token.toLowerCase()) === 0) { 
+                    if(config.ignoreCase){
+                        var opt = token + opt.substring(token.length)
+                    }
                     txtHint.value = leftSide +opt;
                     break;
                 }
