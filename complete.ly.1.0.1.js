@@ -122,7 +122,14 @@ function completely(container, config) {
         var onMouseDown =  function() { p.hide(); p.onmouseselection(this.__hint); }
         
         var p = {
-            hide :  function() { elem.style.visibility = 'hidden'; }, 
+            hide :  function() { 
+                elem.style.visibility = 'hidden';
+                txtHint.style.visibility = 'hidden';
+            },
+            show :  function() { 
+                elem.style.visibility = 'visible';
+                txtHint.style.visibility = 'visible';
+            }, 
             refresh : function(token, array) {
                 elem.style.visibility = 'hidden';
                 ix = 0;
@@ -166,7 +173,13 @@ function completely(container, config) {
                 }
 
                 //hide initially if input is not focused
-                elem.style.visibility = document.activeElement === txtInput ? 'visible' : 'hidden';
+                if (document.activeElement === txtInput) {
+                    p.show();
+                }
+                else {
+                    p.hide();
+                }
+
             },
             highlight : function(index) {
                 if (oldIndex !=-1 && rows[oldIndex]) { 
