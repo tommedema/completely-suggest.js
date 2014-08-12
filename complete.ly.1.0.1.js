@@ -39,6 +39,7 @@ function completely(container, config) {
     txtInput.style.margin =  '0';
     txtInput.style.padding = '0';
     txtInput.className += ' completely-input';
+    txtInput.placeholder_orig = txtInput.placeholder;
     
     var txtHint = txtInput.cloneNode(); 
     txtHint.disabled='';        
@@ -125,10 +126,12 @@ function completely(container, config) {
             hide :  function() { 
                 elem.style.visibility = 'hidden';
                 txtHint.style.visibility = 'hidden';
+                txtInput.placeholder = txtInput.placeholder_orig;
             },
             show :  function() { 
                 elem.style.visibility = 'visible';
                 txtHint.style.visibility = 'visible';
+                txtInput.placeholder = '';
             }, 
             refresh : function(token, array) {
                 elem.style.visibility = 'hidden';
