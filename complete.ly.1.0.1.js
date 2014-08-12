@@ -28,8 +28,8 @@ function completely(container, config) {
     } else {
         txtInput = document.createElement('input');
     }
-    txtInput.type ='text';
-    txtInput.spellcheck = false; 
+    txtInput.setAttribute('type', 'text');
+    txtInput.setAttribute('spellcheck', 'false');
     txtInput.style.fontSize =        config.fontSize;
     txtInput.style.fontFamily =      config.fontFamily;
     txtInput.style.color =           config.color;
@@ -43,16 +43,16 @@ function completely(container, config) {
     txtInput.placeholder_orig = txtInput.placeholder;
     
     var txtHint = txtInput.cloneNode(); 
-    if (txtHint.id) delete txtHint.id;
-    if (txtHint.placeholder) delete txtHint.placeholder;
-    txtHint.disabled='';        
+    if (txtHint.getAttribute('id')) txtHint.removeAttribute('id');
+    if (txtHint.getAttribute('placeholder')) txtHint.removeAttribute('placeholder');
+    if (txtHint.getAttribute('disabled')) txtHint.removeAttribute('disabled');
     txtHint.style.position = 'absolute';
     txtHint.style.top =  '0';
     txtHint.style.left = '0';
     txtHint.style.borderColor = 'transparent';
     txtHint.style.boxShadow =   'none';
     txtHint.style.color = config.hintColor;
-    txtHint.className = 'completely-hint';
+    txtHint.className.replace('completely-input', 'completely-hint');
     
     txtInput.style.backgroundColor ='transparent';
     txtInput.style.verticalAlign = 'top';
