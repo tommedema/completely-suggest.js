@@ -164,7 +164,9 @@ function completely(container, config) {
                     elem.style.bottom = '';
                     elem.style.maxHeight =  distanceToBottom+'px';
                 }
-                elem.style.visibility = 'visible';
+
+                //hide initially if input is not focused
+                elem.style.visibility = document.activeElement === txtInput ? 'visible' : 'hidden';
             },
             highlight : function(index) {
                 if (oldIndex !=-1 && rows[oldIndex]) { 
