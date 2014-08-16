@@ -8,7 +8,7 @@
  * 
 **/
 
-function completely(container, config) {
+function completely(txtInput, config) {
     config = config || {};
     config.fontSize =                       config.fontSize   || '16px';
     config.fontFamily =                     config.fontFamily || 'sans-serif';
@@ -21,14 +21,6 @@ function completely(container, config) {
     config.dropDownOnHoverBackgroundColor = config.dropDownOnHoverBackgroundColor || '#ddd';
     config.ignoreCase = (typeof config.ignoreCase === 'boolean') ? config.ignoreCase : true;
 
-    var txtInput;
-    if (container.tagName === 'INPUT') {
-        txtInput = container;
-        container = container.parentNode;
-    } else {
-        txtInput = document.createElement('input');
-        txtInput.setAttribute('type', 'text');
-    }
     txtInput.setAttribute('spellcheck', 'false');
     txtInput.setAttribute('autocomplete', 'off');
     txtInput.style.fontSize =        config.fontSize;
@@ -39,8 +31,7 @@ function completely(container, config) {
     txtInput.style.backgroundColor ='transparent';
     txtInput.placeholder_orig = txtInput.placeholder;
     
-    var txtHint = txtInput.cloneNode(); 
-    if (txtHint.getAttribute('id')) txtHint.removeAttribute('id');
+    var txtHint = txtInput.cloneNode();
     if (txtHint.getAttribute('placeholder')) txtHint.removeAttribute('placeholder');
     txtHint.setAttribute('disabled', 'disabled');
     txtHint.style.position = 'absolute';
@@ -49,26 +40,6 @@ function completely(container, config) {
     txtHint.style.color = config.hintColor;
     txtHint.style.zIndex = -1;
     if (txtHint.className) txtHint.className = txtHint.className.replace('completely-input', 'completely-hint');
-    
-    var prompt = document.createElement('div');
-    prompt.style.position = 'absolute';
-    prompt.style.outline = '0';
-    prompt.style.margin =  '0';
-    prompt.style.padding = '0';
-    prompt.style.border =  '0';
-    prompt.style.fontSize =   config.fontSize;
-    prompt.style.fontFamily = config.fontFamily;
-    prompt.style.color =           config.color;
-    prompt.style.backgroundColor = config.backgroundColor;
-    prompt.style.overflow = 'hidden';
-    prompt.innerHTML = config.promptInnerHTML;
-    prompt.style.background = 'transparent';
-    prompt.className = 'completely-prompt';
-    if (document.body === undefined) {
-        throw 'document.body is undefined. The library was wired up incorrectly.';
-    }
-    document.body.appendChild(prompt);
-    prompt.style.visibility = 'visible';
         
     var dropDown = document.createElement('div');
     dropDown.style.position = 'absolute';
@@ -100,9 +71,9 @@ function completely(container, config) {
         var onMouseDown =  function() { p.hide(); p.onmouseselection(this.__hint); }
         
         var p = {
-            hide :  function() { 
+            hide :  function(hint) { 
                 elem.style.visibility = 'hidden';
-                txtHint.style.visibility = 'hidden';
+                if (hint !== false) txtHint.style.visibility = 'hidden';
                 txtInput.placeholder = txtInput.placeholder_orig;
             },
             show :  function() { 
@@ -132,23 +103,15 @@ function completely(container, config) {
                     rows.push(divRow);
                     elem.appendChild(divRow);
                 }
-                if (rows.length < 2) {
-                    return p.hide(); // nothing to show.
-                }
-                if (rows.length===1 && token === rows[0].__hint) {
-                    return p.hide(); // do not show the dropDown if it has only one element which matches what we have just displayed.
+                if ((rows.length===1 && token === rows[0].__hint) || rows.length < 2) {
+                    return p.hide(false); // do not show the dropDown if it has only one element which matches what we have just displayed.
                 }
                 
-                //highlist first row
+                //always highlight the first suggestion
                 p.highlight(0);
 
                 //hide initially if input is not focused
-                if (document.activeElement === txtInput) {
-                    p.show();
-                }
-                else {
-                    p.hide();
-                }
+                (document.activeElement === txtInput) ? p.show() : p.hide();
 
             },
             highlight : function(index) {
@@ -180,24 +143,14 @@ function completely(container, config) {
     }
 
     //set dynamic positions and sizes
-    txtHint.style.top = txtInput.offsetTop - txtInput.clientTop + 'px';
-    txtHint.style.left = txtInput.offsetLeft - txtInput.clientLeft + 'px';
-    prompt.style.top = txtInput.offsetTop + 'px';
-    prompt.style.left = txtInput.offsetLeft + 'px';
     dropDown.style.top = txtInput.offsetTop + txtInput.clientHeight + txtInput.clientTop + 'px';
     dropDown.style.left = txtInput.offsetLeft + 'px';
     dropDown.style.width = txtInput.clientWidth + txtInput.clientLeft + 'px';
 
     //add to container
-    if (container.childNodes.length) {
-        container.insertBefore(txtHint, container.childNodes[0]);
-        container.insertBefore(prompt, container.childNodes[0]);
-        container.insertBefore(dropDown, container.childNodes[0]);
-    } else {
-        container.appendChild(txtHint);
-        container.appendChild(prompt);
-        container.appendChild(dropDown);
-    }
+    var container = txtInput.parentNode;
+    container.insertBefore(dropDown, txtInput);
+    container.insertBefore(txtHint, txtInput);
     
     var spacer; 
     var leftSide; // <-- it will contain the leftSide part of the textfield (the bit that was already autocompleted)   
@@ -210,10 +163,6 @@ function completely(container, config) {
         onChange:     function() { rs.repaint() }, // defaults to repainting.
         startFrom:    0,
         options:      [],
-        input :  txtInput,      // Only to allow  easy access to the HTML elements to the final user (possibly for minor customizations) 
-        hint  :  txtHint,       // Only to allow  easy access to the HTML elements to the final user (possibly for minor customizations)
-        dropDown :  dropDown,   // Only to allow  easy access to the HTML elements to the final user (possibly for minor customizations)
-        prompt : prompt,
         setText : function(text) {
             txtHint.value = text;
             txtInput.value = text; 
@@ -269,6 +218,7 @@ function completely(container, config) {
     **/
     var registerOnTextChange = function(txt, callback) {
         registerOnTextChangeOldValue = txt.value;
+        
         var handler = function() {
             var value = txt.value;
             if (registerOnTextChangeOldValue !== value) {
@@ -290,7 +240,8 @@ function completely(container, config) {
             txt.addEventListener("input",  handler, false);
             txt.addEventListener('keyup',  handler, false);
             txt.addEventListener('change', handler, false);
-        } else { // is this a fair assumption: that attachEvent will exist ?
+        }
+        else {
             txt.attachEvent('oninput', handler); // IE<9
             txt.attachEvent('onkeyup', handler); // IE<9
             txt.attachEvent('onchange',handler); // IE<9
@@ -392,7 +343,8 @@ function completely(container, config) {
     
     if (txtInput.addEventListener) {
         txtInput.addEventListener("keydown",  keyDownHandler, false);
-    } else { // is this a fair assumption: that attachEvent will exist ?
+    }
+    else {
         txtInput.attachEvent('onkeydown', keyDownHandler); // IE<9
     }
     return rs;
