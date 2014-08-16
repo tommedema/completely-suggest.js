@@ -10,10 +10,10 @@
 
 function completely(txtInput, config) {
     config = config || {};
-    config.fontSize =                       config.fontSize   || '16px';
-    config.fontFamily =                     config.fontFamily || 'sans-serif';
+    config.fontSize =                       config.fontSize   || getStyle(txtInput, 'font-size');
+    config.fontFamily =                     config.fontFamily || getStyle(txtInput, 'font-family');
     config.promptInnerHTML =                config.promptInnerHTML || ''; 
-    config.color =                          config.color || '#333';
+    config.color =                          config.color || getStyle(txtInput, 'color');
     config.hintColor =                      config.hintColor || '#aaa';
     config.backgroundColor =                config.backgroundColor || '#fff';
     config.dropDownBorderColor =            config.dropDownBorderColor || '#aaa';
@@ -23,9 +23,9 @@ function completely(txtInput, config) {
 
     txtInput.setAttribute('spellcheck', 'false');
     txtInput.setAttribute('autocomplete', 'off');
-    // txtInput.style.fontSize =        config.fontSize;
-    // txtInput.style.fontFamily =      config.fontFamily;
-    // txtInput.style.color =           config.color;
+    txtInput.style.fontSize =        config.fontSize;
+    txtInput.style.fontFamily =      config.fontFamily;
+    txtInput.style.color =           config.color;
     txtInput.style.backgroundColor = config.backgroundColor;
     txtInput.className += ' completely-input';
     txtInput.style.backgroundColor ='transparent';
@@ -48,8 +48,8 @@ function completely(txtInput, config) {
     dropDown.style.margin =  '0';
     dropDown.style.padding = '0';  
     dropDown.style.textAlign = 'left';
-    // dropDown.style.fontSize =   config.fontSize;      
-    // dropDown.style.fontFamily = config.fontFamily;
+    dropDown.style.fontSize =   config.fontSize;      
+    dropDown.style.fontFamily = config.fontFamily;
     dropDown.style.backgroundColor = config.backgroundColor;
     dropDown.style.zIndex = config.dropDownZIndex; 
     dropDown.style.cursor = 'default';
@@ -330,8 +330,6 @@ function completely(txtInput, config) {
         if (keyCode == 40) {     // down
             var m = dropDownController.move(+1);
             if (m == '') { rs.onArrowDown(); }
-
-            console.log('setting value to %s with leftSide %s and m %s', leftSide+m, leftSide, m);
             txtHint.value = leftSide+m;
             return; 
         } 
