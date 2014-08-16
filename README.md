@@ -13,9 +13,11 @@ Changelog compared to forked repo:
   > show autocomplete box on focus, hide on blur
 - Comply with input placeholders
 - Case insensitive matching
+- Inherit suggestions width from input element
+- Comply with input margin, borders, etc.
+- Passed HTML element must now be the input element, not a container.
 
 ToDo:
-- Inherit suggestions width from input element
 - Inherit font style, size, color from parent element
 - Play nicely with formatted inputs (e.g. Bootstrap themes)
 - Cross browser (with HTML5 and ES5 polyfills IE8+)
