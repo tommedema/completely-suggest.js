@@ -27,44 +27,28 @@ function completely(container, config) {
         container = container.parentNode;
     } else {
         txtInput = document.createElement('input');
+        txtInput.setAttribute('type', 'text');
     }
-    txtInput.setAttribute('type', 'text');
     txtInput.setAttribute('spellcheck', 'false');
+    txtInput.setAttribute('autocomplete', 'off');
     txtInput.style.fontSize =        config.fontSize;
     txtInput.style.fontFamily =      config.fontFamily;
     txtInput.style.color =           config.color;
     txtInput.style.backgroundColor = config.backgroundColor;
-    txtInput.style.width = '100%';
-    txtInput.style.outline = '0';
-    txtInput.style.border =  '0';
-    txtInput.style.margin =  '0';
-    txtInput.style.padding = '0';
     txtInput.className += ' completely-input';
+    txtInput.style.backgroundColor ='transparent';
     txtInput.placeholder_orig = txtInput.placeholder;
     
     var txtHint = txtInput.cloneNode(); 
     if (txtHint.getAttribute('id')) txtHint.removeAttribute('id');
     if (txtHint.getAttribute('placeholder')) txtHint.removeAttribute('placeholder');
-    if (txtHint.getAttribute('disabled')) txtHint.removeAttribute('disabled');
+    txtHint.setAttribute('disabled', 'disabled');
     txtHint.style.position = 'absolute';
-    txtHint.style.top =  '0';
-    txtHint.style.left = '0';
     txtHint.style.borderColor = 'transparent';
     txtHint.style.boxShadow =   'none';
     txtHint.style.color = config.hintColor;
-    txtHint.className.replace('completely-input', 'completely-hint');
-    
-    txtInput.style.backgroundColor ='transparent';
-    txtInput.style.verticalAlign = 'top';
-    txtInput.style.position = 'relative';
-    
-    var wrapper = document.createElement('div');
-    wrapper.style.position = 'relative';
-    wrapper.style.outline = '0';
-    wrapper.style.border =  '0';
-    wrapper.style.margin =  '0';
-    wrapper.style.padding = '0';
-    wrapper.className = 'completely-wrapper';
+    txtHint.style.zIndex = -1;
+    if (txtHint.className) txtHint.className = txtHint.className.replace('completely-input', 'completely-hint');
     
     var prompt = document.createElement('div');
     prompt.style.position = 'absolute';
@@ -76,8 +60,6 @@ function completely(container, config) {
     prompt.style.fontFamily = config.fontFamily;
     prompt.style.color =           config.color;
     prompt.style.backgroundColor = config.backgroundColor;
-    prompt.style.top = '0';
-    prompt.style.left = '0';
     prompt.style.overflow = 'hidden';
     prompt.innerHTML = config.promptInnerHTML;
     prompt.style.background = 'transparent';
@@ -85,16 +67,9 @@ function completely(container, config) {
     if (document.body === undefined) {
         throw 'document.body is undefined. The library was wired up incorrectly.';
     }
-    document.body.appendChild(prompt);            
-    var w = prompt.getBoundingClientRect().right; // works out the width of the prompt.
-    wrapper.appendChild(prompt);
+    document.body.appendChild(prompt);
     prompt.style.visibility = 'visible';
-    prompt.style.left = '-'+w+'px';
-    wrapper.style.marginLeft= w+'px';
-    
-    wrapper.appendChild(txtHint);
-    wrapper.appendChild(txtInput);
-    
+        
     var dropDown = document.createElement('div');
     dropDown.style.position = 'absolute';
     dropDown.style.visibility = 'hidden';
@@ -114,7 +89,6 @@ function completely(container, config) {
     dropDown.style.whiteSpace = 'pre';
     dropDown.style.overflowY = 'scroll';  // note: this might be ugly when the scrollbar is not required. however in this way the width of the dropDown takes into account
     dropDown.className = 'completely-dropdown';
-    
     
     var createDropDownController = function(elem) {
         var rows = [];
@@ -140,10 +114,6 @@ function completely(container, config) {
                 elem.style.visibility = 'hidden';
                 ix = 0;
                 elem.innerHTML ='';
-                var vph = (window.innerHeight || document.documentElement.clientHeight);
-                var rect = elem.parentNode.getBoundingClientRect();
-                var distanceToTop = rect.top - 6;                        // heuristic give 6px 
-                var distanceToBottom = vph - rect.bottom -6;  // distance from the browser border.
                 
                 rows = [];
                 for (var i=0;i<array.length;i++) {
@@ -162,25 +132,15 @@ function completely(container, config) {
                     rows.push(divRow);
                     elem.appendChild(divRow);
                 }
-                if (rows.length===0) {
-                    return; // nothing to show.
+                if (rows.length < 2) {
+                    return p.hide(); // nothing to show.
                 }
                 if (rows.length===1 && token === rows[0].__hint) {
-                    return; // do not show the dropDown if it has only one element which matches what we have just displayed.
+                    return p.hide(); // do not show the dropDown if it has only one element which matches what we have just displayed.
                 }
                 
-                if (rows.length<2) return; 
+                //highlist first row
                 p.highlight(0);
-                
-                if (distanceToTop > distanceToBottom*3) {        // Heuristic (only when the distance to the to top is 4 times more than distance to the bottom
-                    elem.style.maxHeight =  distanceToTop+'px';  // we display the dropDown on the top of the input text
-                    elem.style.top ='';
-                    elem.style.bottom ='100%';
-                } else {
-                    elem.style.top = '100%';  
-                    elem.style.bottom = '';
-                    elem.style.maxHeight =  distanceToBottom+'px';
-                }
 
                 //hide initially if input is not focused
                 if (document.activeElement === txtInput) {
@@ -219,64 +179,28 @@ function completely(container, config) {
         setTimeout(function() { txtInput.focus(); },0);  // <-- I need to do this for IE 
     }
 
-    //show drop down on focus and hide on blur
-    if (txtInput.addEventListener) {
-        txtHint.addEventListener('focus',  txtInputFocusHandler, false);
-        txtHint.addEventListener('blur',  txtInputBlurHandler, false);
-        txtInput.addEventListener('focus',  txtInputFocusHandler, false);
-        txtInput.addEventListener('blur',  txtInputBlurHandler, false);
-    }
-    else {
-        txtHint.attachEvent('onfocusin', txtInputFocusHandler); // IE<9
-        txtHint.attachEvent('onfocusout', txtInputBlurHandler); // IE<9
-        txtInput.attachEvent('onfocusin', txtInputFocusHandler); // IE<9
-        txtInput.attachEvent('onfocusout', txtInputBlurHandler); // IE<9
-    }
-    function txtInputFocusHandler() {
-        dropDownController.show();
-    }
-    function txtInputBlurHandler() {
-        dropDownController.hide();
-    }
-    
-    wrapper.appendChild(dropDown);
+    //set dynamic positions and sizes
+    txtHint.style.top = txtInput.offsetTop - txtInput.clientTop + 'px';
+    txtHint.style.left = txtInput.offsetLeft - txtInput.clientLeft + 'px';
+    prompt.style.top = txtInput.offsetTop + 'px';
+    prompt.style.left = txtInput.offsetLeft + 'px';
+    dropDown.style.top = txtInput.offsetTop + txtInput.clientHeight + txtInput.clientTop + 'px';
+    dropDown.style.left = txtInput.offsetLeft + 'px';
+    dropDown.style.width = txtInput.clientWidth + txtInput.clientLeft + 'px';
+
+    //add to container
     if (container.childNodes.length) {
-        container.insertBefore(wrapper, container.childNodes[0]);
+        container.insertBefore(txtHint, container.childNodes[0]);
+        container.insertBefore(prompt, container.childNodes[0]);
+        container.insertBefore(dropDown, container.childNodes[0]);
     } else {
-        container.appendChild(wrapper);
+        container.appendChild(txtHint);
+        container.appendChild(prompt);
+        container.appendChild(dropDown);
     }
     
     var spacer; 
-    var leftSide; // <-- it will contain the leftSide part of the textfield (the bit that was already autocompleted)
-    
-    
-    function calculateWidthForText(text) {
-        if (spacer === undefined) { // on first call only.
-            spacer = document.createElement('span'); 
-            spacer.style.visibility = 'hidden';
-            spacer.style.position = 'fixed';
-            spacer.style.outline = '0';
-            spacer.style.margin =  '0';
-            spacer.style.padding = '0';
-            spacer.style.border =  '0';
-            spacer.style.left = '0';
-            spacer.style.whiteSpace = 'pre';
-            spacer.style.fontSize =   config.fontSize;
-            spacer.style.fontFamily = config.fontFamily;
-            spacer.style.fontWeight = 'normal';
-            document.body.appendChild(spacer);    
-        }        
-        
-        // Used to encode an HTML string into a plain text.
-        // taken from http://stackoverflow.com/questions/1219860/javascript-jquery-html-encoding
-        spacer.innerHTML = String(text).replace(/&/g, '&amp;')
-                                       .replace(/"/g, '&quot;')
-                                       .replace(/'/g, '&#39;')
-                                       .replace(/</g, '&lt;')
-                                       .replace(/>/g, '&gt;');
-        return spacer.getBoundingClientRect().right;
-    }
-    
+    var leftSide; // <-- it will contain the leftSide part of the textfield (the bit that was already autocompleted)   
     
     var rs = { 
         onArrowDown : function() {},               // defaults to no action.
@@ -286,20 +210,19 @@ function completely(container, config) {
         onChange:     function() { rs.repaint() }, // defaults to repainting.
         startFrom:    0,
         options:      [],
-        wrapper : wrapper,      // Only to allow  easy access to the HTML elements to the final user (possibly for minor customizations)
         input :  txtInput,      // Only to allow  easy access to the HTML elements to the final user (possibly for minor customizations) 
         hint  :  txtHint,       // Only to allow  easy access to the HTML elements to the final user (possibly for minor customizations)
-        dropDown :  dropDown,         // Only to allow  easy access to the HTML elements to the final user (possibly for minor customizations)
+        dropDown :  dropDown,   // Only to allow  easy access to the HTML elements to the final user (possibly for minor customizations)
         prompt : prompt,
         setText : function(text) {
             txtHint.value = text;
             txtInput.value = text; 
         },
         getText : function() {
-        	return txtInput.value; 
+            return txtInput.value; 
         },
         hideDropDown : function() {
-        	dropDownController.hide();
+            dropDownController.hide();
         },
         repaint : function() {
             var text = txtInput.value;
@@ -324,11 +247,19 @@ function completely(container, config) {
                 }
             }
             
-            // moving the dropDown and refreshing it.
-            dropDown.style.left = calculateWidthForText(leftSide)+'px';
             dropDownController.refresh(token, rs.options);
         }
     };
+
+    //show drop down on focus and hide on blur
+    if (txtInput.addEventListener) {
+        txtInput.addEventListener('focus',  rs.repaint, false);
+        txtInput.addEventListener('blur',  rs.repaint, false);
+    }
+    else {
+        txtInput.attachEvent('onfocusin', rs.repaint); // IE<9
+        txtInput.attachEvent('onfocusout', rs.repaint); // IE<9
+    }
     
     var registerOnTextChangeOldValue;
 
@@ -387,12 +318,12 @@ function completely(container, config) {
         }
         
         if (keyCode == 39 || keyCode == 35 || keyCode == 9) { // right,  end, tab  (autocomplete triggered)
-        	if (keyCode == 9) { // for tabs we need to ensure that we override the default behaviour: move to the next focusable HTML-element 
-           	    e.preventDefault();
+            if (keyCode == 9) { // for tabs we need to ensure that we override the default behaviour: move to the next focusable HTML-element 
+                e.preventDefault();
                 e.stopPropagation();
                 if (txtHint.value.length == 0) {
-                	rs.onTab(); // tab was called with no action.
-                	            // users might want to re-enable its default behaviour or handle the call somehow.
+                    rs.onTab(); // tab was called with no action.
+                                // users might want to re-enable its default behaviour or handle the call somehow.
                 }
             }
             if (txtHint.value.length > 0) { // if there is a hint

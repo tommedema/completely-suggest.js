@@ -15,7 +15,7 @@ Changelog compared to forked repo:
 - Case insensitive matching
 
 ToDo:
-- Inherit font style, size, color from parent element
 - Inherit suggestions width from input element
+- Inherit font style, size, color from parent element
 - Play nicely with formatted inputs (e.g. Bootstrap themes)
 - Cross browser (with HTML5 and ES5 polyfills IE8+)
