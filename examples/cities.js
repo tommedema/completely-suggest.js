@@ -10,9 +10,9 @@
 
     //enable completely-suggest
     var suggest = completely(cityInput, {
-      fontSize : '24px',
-      fontFamily : 'Arial',
-      color:'#933'
+      //fontSize : '24px',
+      //fontFamily : 'Arial',
+      //color:'#933'
     });
 
     //set options

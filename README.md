@@ -19,5 +19,5 @@ Changelog compared to forked repo:
 
 ToDo:
 - Inherit font style, size, color from parent element
-- Play nicely with formatted inputs (e.g. Bootstrap themes)
+- Play nicely with margins, paddings, and formatted inputs (e.g. Bootstrap themes)
 - Cross browser (with HTML5 and ES5 polyfills IE8+)

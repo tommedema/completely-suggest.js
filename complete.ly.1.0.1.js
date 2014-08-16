@@ -23,9 +23,9 @@ function completely(txtInput, config) {
 
     txtInput.setAttribute('spellcheck', 'false');
     txtInput.setAttribute('autocomplete', 'off');
-    txtInput.style.fontSize =        config.fontSize;
-    txtInput.style.fontFamily =      config.fontFamily;
-    txtInput.style.color =           config.color;
+    // txtInput.style.fontSize =        config.fontSize;
+    // txtInput.style.fontFamily =      config.fontFamily;
+    // txtInput.style.color =           config.color;
     txtInput.style.backgroundColor = config.backgroundColor;
     txtInput.className += ' completely-input';
     txtInput.style.backgroundColor ='transparent';
@@ -48,8 +48,8 @@ function completely(txtInput, config) {
     dropDown.style.margin =  '0';
     dropDown.style.padding = '0';  
     dropDown.style.textAlign = 'left';
-    dropDown.style.fontSize =   config.fontSize;      
-    dropDown.style.fontFamily = config.fontFamily;
+    // dropDown.style.fontSize =   config.fontSize;      
+    // dropDown.style.fontFamily = config.fontFamily;
     dropDown.style.backgroundColor = config.backgroundColor;
     dropDown.style.zIndex = config.dropDownZIndex; 
     dropDown.style.cursor = 'default';
@@ -60,6 +60,13 @@ function completely(txtInput, config) {
     dropDown.style.whiteSpace = 'pre';
     dropDown.style.overflowY = 'scroll';  // note: this might be ugly when the scrollbar is not required. however in this way the width of the dropDown takes into account
     dropDown.className = 'completely-dropdown';
+
+    var pTop = getStyle(txtInput, 'padding-top');
+    var pBot = getStyle(txtInput, 'padding-bottom');
+    var pLeft = getStyle(txtInput, 'padding-left');
+    var pRight = getStyle(txtInput, 'padding-right');
+    if (pTop) dropDown.style.paddingTop = pTop;
+    if (pBot) dropDown.style.paddingBottom = pBot;
     
     var createDropDownController = function(elem) {
         var rows = [];
@@ -93,6 +100,8 @@ function completely(txtInput, config) {
                         _normalizedToken = array[i].substring(0, token.length);
                     if (_entry.indexOf(_token)!==0) { continue; }
                     var divRow =document.createElement('div');
+                    if (pLeft) divRow.style.paddingLeft = pLeft;
+                    if (pRight) divRow.style.paddingRight = pRight;
                     divRow.style.color = config.color;
                     divRow.onmouseover = onMouseOver; 
                     divRow.onmouseout =  onMouseOut;
@@ -350,4 +359,18 @@ function completely(txtInput, config) {
         txtInput.attachEvent('onkeydown', keyDownHandler); // IE<9
     }
     return rs;
+
+    function getStyle(oElm, strCssRule){
+        var strValue = "";
+        if(document.defaultView && document.defaultView.getComputedStyle){
+            strValue = document.defaultView.getComputedStyle(oElm, "").getPropertyValue(strCssRule);
+        }
+        else if(oElm.currentStyle){
+            strCssRule = strCssRule.replace(/\-(\w)/g, function (strMatch, p1){
+                return p1.toUpperCase();
+            });
+            strValue = oElm.currentStyle[strCssRule];
+        }
+        return strValue;
+    }
 }
