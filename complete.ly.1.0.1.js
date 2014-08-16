@@ -279,8 +279,7 @@ function completely(txtInput, config) {
         
         if (keyCode == 39 || keyCode == 35 || keyCode == 9) { // right,  end, tab  (autocomplete triggered)
             if (keyCode == 9) { // for tabs we need to ensure that we override the default behaviour: move to the next focusable HTML-element 
-                e.preventDefault();
-                e.stopPropagation();
+                e.preventDefault ? (e.preventDefault() && e.stopPropagation()) : window.event.returnValue = false;
                 if (txtHint.value.length == 0) {
                     rs.onTab(); // tab was called with no action.
                                 // users might want to re-enable its default behaviour or handle the call somehow.
@@ -338,8 +337,7 @@ function completely(txtInput, config) {
             var m = dropDownController.move(-1);
             if (m == '') { rs.onArrowUp(); }
             txtHint.value = leftSide+m;
-            e.preventDefault();
-            e.stopPropagation();
+            e.preventDefault ? (e.preventDefault() && e.stopPropagation()) : window.event.returnValue = false;
             return; 
         }
             

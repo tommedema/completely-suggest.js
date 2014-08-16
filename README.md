@@ -18,6 +18,7 @@ Changelog compared to forked repo:
 - Passed HTML element must now be the input element, not a container.
 - Inherit font style, size, color from input element
 - Play nicely with margins, paddings, and formatted inputs (e.g. Bootstrap themes)
+- Cross browser (tested on latest Chrome, Firefox, and IE8)
 
 ToDo:
-- Cross browser (with HTML5 and ES5 polyfills IE8+)
+- Test on IE9, IE10, mobile browsers, and Safari
