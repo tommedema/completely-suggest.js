@@ -9,7 +9,7 @@
     var cityInput = document.getElementById('city-input');
 
     //enable completely-suggest
-    var suggest = completely(cityInput);
+    var suggest = completelySuggest(cityInput);
 
     //set options
     suggest.options = cities;

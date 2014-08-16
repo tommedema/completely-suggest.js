@@ -9,11 +9,7 @@
     var cityInput = document.getElementById('city-input');
 
     //enable completely-suggest
-    var suggest = completely(cityInput, {
-      //fontSize : '24px',
-      //fontFamily : 'Arial',
-      //color:'#933'
-    });
+    var suggest = completelySuggest(cityInput);
 
     //set options
     suggest.options = cities;

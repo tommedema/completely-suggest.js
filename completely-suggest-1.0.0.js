@@ -8,7 +8,7 @@
  * 
 **/
 
-function completely(txtInput, config) {
+window.completelySuggest = function(txtInput, config) {
     config = config || {};
     config.fontSize =                       config.fontSize   || getStyle(txtInput, 'font-size');
     config.fontFamily =                     config.fontFamily || getStyle(txtInput, 'font-family');
@@ -369,4 +369,4 @@ function completely(txtInput, config) {
         }
         return strValue;
     }
-}
+};
