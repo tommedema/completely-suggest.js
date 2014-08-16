@@ -98,7 +98,7 @@ function completely(txtInput, config) {
                     divRow.onmouseout =  onMouseOut;
                     divRow.onmousedown =  onMouseDown;
                     
-                    divRow.__hint =    array[i];
+                    divRow.__hint = token + array[i].substring(token.length); //array[i];
                     divRow.innerHTML = _normalizedToken+'<b>'+array[i].substring(token.length)+'</b>';
                     rows.push(divRow);
                     elem.appendChild(divRow);
@@ -321,6 +321,8 @@ function completely(txtInput, config) {
         if (keyCode == 40) {     // down
             var m = dropDownController.move(+1);
             if (m == '') { rs.onArrowDown(); }
+
+            console.log('setting value to %s with leftSide %s and m %s', leftSide+m, leftSide, m);
             txtHint.value = leftSide+m;
             return; 
         } 
