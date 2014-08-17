@@ -114,7 +114,9 @@ window.completelySuggest = function(txtInput, config) {
                     elem.appendChild(divRow);
                 }
                 if ((rows.length===1 && token === rows[0].__hint) || rows.length < 2) {
-                    return p.hide(false); // do not show the dropDown if it has only one element which matches what we have just displayed.
+                    
+                    // do not show the dropDown if it has only one element which matches what we have just displayed.
+                    return (document.activeElement === txtInput) ? p.hide(false) : p.hide();
                 }
                 
                 //always highlight the first suggestion
