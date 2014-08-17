@@ -58,8 +58,9 @@ window.completelySuggest = function(txtInput, config) {
     dropDown.style.borderColor = config.dropDownBorderColor;
     dropDown.style.overflowX= 'hidden';
     dropDown.style.whiteSpace = 'pre';
-    dropDown.style.overflowY = 'scroll';  // note: this might be ugly when the scrollbar is not required. however in this way the width of the dropDown takes into account
+    dropDown.style.overflowY = 'auto';  // note: this might be ugly when the scrollbar is not required. however in this way the width of the dropDown takes into account
     dropDown.className = 'completely-dropdown';
+    dropDown.style.maxHeight = (txtInput.clientHeight * 10) + 'px';
 
     var pTop = getStyle(txtInput, 'padding-top');
     var pBot = getStyle(txtInput, 'padding-bottom');

@@ -19,6 +19,9 @@ Changelog compared to forked repo:
 - Inherit font style, size, color from input element
 - Play nicely with margins, paddings, and formatted inputs (e.g. Bootstrap themes)
 - Cross browser (tested on latest Chrome, Firefox, and IE8)
+- Removed redundant custom cursor
+- Dropdown overflow is now automatic, scrollbars are only shown when necessary
+- Dropdown height is limited to 10 times the height of the input element (then a scrollbar is shown)
 
 ToDo:
 - Test on IE9, IE10, mobile browsers, and Safari
