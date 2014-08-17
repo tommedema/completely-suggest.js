@@ -32,6 +32,13 @@ window.completelySuggest = function(txtInput, config) {
     txtInput.placeholder_orig = txtInput.placeholder;
     
     var txtHint = txtInput.cloneNode();
+
+    //avoid duplicate IDs when possible, while preserving styles
+    if (txtHint.getAttribute('id') && window.getComputedStyle) {
+        txtHint.style.cssText = window.getComputedStyle(txtInput, '').cssText;
+        txtHint.removeAttribute('id');
+    }
+
     if (txtHint.getAttribute('placeholder')) txtHint.removeAttribute('placeholder');
     txtHint.setAttribute('disabled', 'disabled');
     txtHint.style.position = 'absolute';
