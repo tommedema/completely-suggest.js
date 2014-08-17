@@ -32,20 +32,13 @@ window.completelySuggest = function(txtInput, config) {
     txtInput.placeholder_orig = txtInput.placeholder;
     
     var txtHint = txtInput.cloneNode();
-
-    //avoid duplicate IDs when possible, while preserving styles
-    if (txtHint.getAttribute('id') && window.getComputedStyle) {
-        txtHint.style.cssText = window.getComputedStyle(txtInput, '').cssText;
-        txtHint.removeAttribute('id');
-    }
-
-    if (txtHint.getAttribute('placeholder')) txtHint.removeAttribute('placeholder');
-    txtHint.setAttribute('disabled', 'disabled');
     txtHint.style.position = 'absolute';
     txtHint.style.borderColor = 'transparent';
-    txtHint.style.boxShadow =   'none';
+    txtHint.style.boxShadow = 'none';
     txtHint.style.color = config.hintColor;
     txtHint.style.zIndex = -1;
+    if (txtHint.getAttribute('placeholder')) txtHint.removeAttribute('placeholder');
+    txtHint.setAttribute('disabled', 'disabled');
     if (txtHint.className) txtHint.className = txtHint.className.replace('completely-input', 'completely-hint');
         
     var dropDown = document.createElement('div');
@@ -163,10 +156,16 @@ window.completelySuggest = function(txtInput, config) {
     dropDown.style.left = txtInput.offsetLeft + 'px';
     dropDown.style.width = txtInput.clientWidth + txtInput.clientLeft + 'px';
 
-    //add to container, after txtInput (in case of duplicate IDs getElementById should return the first original match)
+    //add to container
     var container = txtInput.parentNode;
-    container.insertBefore(dropDown, txtInput.nextSibling);
+    container.insertBefore(dropDown, txtInput);
     container.insertBefore(txtHint, txtInput);
+
+    //avoid duplicate IDs when possible, while preserving styles
+    if (txtHint.getAttribute('id') && window.getComputedStyle) {
+        txtHint.style.cssText = window.getComputedStyle(txtHint, '').cssText;
+        txtHint.removeAttribute('id');
+    }
     
     var spacer; 
     var leftSide; // <-- it will contain the leftSide part of the textfield (the bit that was already autocompleted)   
