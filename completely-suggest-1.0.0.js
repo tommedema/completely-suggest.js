@@ -162,13 +162,11 @@ window.completelySuggest = function(txtInput, config) {
     dropDown.style.top = txtInput.offsetTop + txtInput.clientHeight + txtInput.clientTop + 'px';
     dropDown.style.left = txtInput.offsetLeft + 'px';
     dropDown.style.width = txtInput.clientWidth + txtInput.clientLeft + 'px';
-    txtHint.style.top = txtInput.offsetTop + 'px';
-    txtHint.style.left = txtInput.offsetLeft + 'px';
 
     //add to container, after txtInput (in case of duplicate IDs getElementById should return the first original match)
     var container = txtInput.parentNode;
     container.insertBefore(dropDown, txtInput.nextSibling);
-    container.insertBefore(txtHint, txtInput.nextSibling);
+    container.insertBefore(txtHint, txtInput);
     
     var spacer; 
     var leftSide; // <-- it will contain the leftSide part of the textfield (the bit that was already autocompleted)   
